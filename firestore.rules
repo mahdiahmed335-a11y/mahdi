@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // أي حد يقدر يقرأ وينشر وظيفة (المنصة عامة ومفتوحة)
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.title.size() < 200
+                    && request.resource.data.description is string
+                    && request.resource.data.description.size() < 3000
+                    && request.resource.data.posterPhone is string;
+      // الحذف من الواجهة مفتوح حالياً لأنه ما في نظام تسجيل دخول بعد.
+      // لاحقاً لما تضيف Firebase Auth، قيّد الحذف بمالك الإعلان فقط.
+      allow update, delete: if true;
+    }
+
+    match /messages/{messageId} {
+      allow read: if true;
+      allow create: if request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() < 1000
+                    && request.resource.data.jobId is string;
+      allow update, delete: if false;
+    }
+  }
+}
