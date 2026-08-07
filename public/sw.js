@@ -1,4 +1,4 @@
-const CACHE = "multaqa-v1";
+const CACHE = "multaqa-v2";
 const APP_SHELL = ["/", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -18,7 +18,11 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
   if (event.request.method !== "GET") return;
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request)
