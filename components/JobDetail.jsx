@@ -148,7 +148,3 @@ export default function JobDetail({ job, profile, onSaveProfile, onClose, flash 
     </div>
   );
 }
-بعد ما تحفظ الملفين، ارفعهم:
-git add .
-git commit -m "fix messages query missing composite index"
-git push origin main
