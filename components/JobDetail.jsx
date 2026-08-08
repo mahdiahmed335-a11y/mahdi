@@ -22,7 +22,15 @@ export default function JobDetail({ job, profile, onSaveProfile, onClose, flash 
   useEffect(() => {
     const unsub = listenMessages(
       job.id,
-      (msgs) => { setMessages(msgs); setLoadingMsgs(false); },
+      (msgs) => {
+        const sorted = [...msgs].sort((a, b) => {
+          const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
+          const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
+          return ta - tb;
+        });
+        setMessages(sorted);
+        setLoadingMsgs(false);
+      },
       () => setLoadingMsgs(false)
     );
     return () => unsub && unsub();
@@ -140,3 +148,7 @@ export default function JobDetail({ job, profile, onSaveProfile, onClose, flash 
     </div>
   );
 }
+بعد ما تحفظ الملفين، ارفعهم:
+git add .
+git commit -m "fix messages query missing composite index"
+git push origin main
